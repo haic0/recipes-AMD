@@ -242,8 +242,6 @@ huggingface-cli login
 Run the vllm online serving
 Sample Command
 ```shell
-
-
 SAFETENSORS_FAST_GPU=1 \
 VLLM_USE_V1=1 \
 VLLM_USE_TRITON_FLASH_ATTN=0 vllm serve moonshotai/Kimi-K2-Thinking \
@@ -251,8 +249,8 @@ VLLM_USE_TRITON_FLASH_ATTN=0 vllm serve moonshotai/Kimi-K2-Thinking \
   --no-enable-prefix-caching \
   --enable-auto-tool-choice \
   --tool-call-parser kimi_k2 \
-  --reasoning-parser kimi_k2  \
-  --trust-remote-code 
+  --reasoning-parser kimi_k2 \
+  --trust-remote-code
 
 ```
 
