@@ -193,16 +193,15 @@ huggingface-cli login
 
 ### Step 3: Start the vLLM server
 
-Run the vllm online serving
-Sample Command
+Run the vllm online serving with this sample command:
 ```shell
-
-
 SAFETENSORS_FAST_GPU=1 \
 VLLM_USE_V1=1 \
-VLLM_USE_TRITON_FLASH_ATTN=0 vllm serve moonshotai/Kimi-K2-Instruct -tp 8  --no-enable-prefix-caching --trust-remote-code 
-
-```
+VLLM_USE_TRITON_FLASH_ATTN=0 \
+vllm serve moonshotai/Kimi-K2-Instruct \
+  --tensor-parallel-size 8 \
+  --no-enable-prefix-caching \
+  --trust-remote-code
 
 
 ### Step 4: Run Benchmark
