@@ -79,8 +79,6 @@ huggingface-cli login
 Run the vllm online serving
 Sample Command
 ```shell
-
-
 SAFETENSORS_FAST_GPU=1 \
 VLLM_USE_V1=1 \
 VLLM_USE_TRITON_FLASH_ATTN=0 vllm serve moonshotai/Kimi-Linear-48B-A3B-Instruct \
@@ -88,7 +86,6 @@ VLLM_USE_TRITON_FLASH_ATTN=0 vllm serve moonshotai/Kimi-Linear-48B-A3B-Instruct 
   --max-model-len 1048576 \
   --no-enable-prefix-caching \
   --trust-remote-code
-
 ```
 
 
