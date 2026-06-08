@@ -10,6 +10,9 @@ meta:
   performance_headline: "Optical context compression for efficient OCR and document understanding"
   related_recipes:
     - "deepseek-ai/DeepSeek-OCR-2"
+  hardware:
+    mi300x: verified
+    mi355x: verified
 
 model:
   model_id: "deepseek-ai/DeepSeek-OCR"
@@ -57,6 +60,7 @@ hardware_overrides:
     # Disable Triton FA → AITER FA is faster for dense OCR on MI300X/MI325X/MI355X.
     extra_args: []
     extra_env:
+      VLLM_USE_TRITON_FLASH_ATTN: "0"
       VLLM_ROCM_USE_AITER: "1"
       SAFETENSORS_FAST_GPU: "1"
 
@@ -72,14 +76,21 @@ guide: |
   ## Prerequisites
 
   - **Hardware**: Single GPU with >=8 GB VRAM is typically sufficient for BF16 inference.
-  - **vLLM**: Current stable release (tested with `uv pip install -U vllm --torch-backend auto`).
-  - **Python**: 3.10+
+  - **vLLM**: >= 0.12.0.
+  - **Python**: 3.10+ for NVIDIA; Python 3.12 with ROCm 7.0 and glibc >= 2.35 for AMD ROCm wheels.
 
-  Install vLLM:
+  Install vLLM on NVIDIA:
   ```bash
   uv venv
   source .venv/bin/activate
   uv pip install -U vllm --torch-backend auto
+  ```
+
+  Install vLLM on AMD MI300X/MI325X/MI355X:
+  ```bash
+  uv venv --python 3.12
+  source .venv/bin/activate
+  uv pip install vllm --extra-index-url https://wheels.vllm.ai/rocm
   ```
 
   ## Client Usage
@@ -131,6 +142,20 @@ guide: |
     --mm-processor-cache-gb 0
   ```
 
+  On AMD MI300X/MI325X/MI355X, the recipe enables AITER and disables Triton
+  FlashAttention automatically when you select an AMD hardware profile:
+
+  ```bash
+  export VLLM_USE_TRITON_FLASH_ATTN=0
+  export VLLM_ROCM_USE_AITER=1
+  export SAFETENSORS_FAST_GPU=1
+
+  vllm serve deepseek-ai/DeepSeek-OCR \
+    --logits_processors vllm.model_executor.models.deepseek_ocr:NGramPerReqLogitsProcessor \
+    --no-enable-prefix-caching \
+    --mm-processor-cache-gb 0
+  ```
+
   ```python
   import time
   from openai import OpenAI
@@ -165,6 +190,14 @@ guide: |
   print(f"Response costs: {time.time() - start:.2f}s")
   print(f"Generated text: {response.choices[0].message.content}")
   ```
+
+  ## Benchmarking
+
+  For OCR benchmarking, reuse the online OCR client above with a fixed image set and
+  record latency / throughput around the `chat.completions.create` call. Synthetic
+  `vllm bench serve --dataset-name random` runs only exercise random text prompts,
+  so they are useful for server smoke tests but are not representative of multimodal
+  OCR throughput.
 
   ## Troubleshooting / Configuration Tips
 
