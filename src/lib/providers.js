@@ -43,6 +43,8 @@ export const PROVIDERS = {
   "JetBrains":       { display_name: "JetBrains",                 logo: "/providers/JetBrains.png" },
   "openbmb":         { display_name: "MiniCPM (OpenBMB)",          logo: "/providers/openbmb.png" },
   "LiquidAI":        { display_name: "Liquid AI",                  logo: "/providers/LiquidAI.png" },
+  "thinkingmachines":{ display_name: "Thinking Machines Lab",         logo: "/providers/thinkingmachines.png" },
+  "RedHatAI":        { display_name: "Red Hat AI",                    logo: "/providers/RedHatAI.png" },
 };
 
 export function getProviderLogo(hfOrg) {
